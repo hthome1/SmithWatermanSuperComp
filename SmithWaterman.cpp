@@ -51,18 +51,8 @@ returnFuction calculateMatrix(int n,int m, string dna1, string dna2)
     vector < vector <matrixElement>> H;
     H.resize(n+1);
 
-    for(int linha = 0; linha< n+1; linha++){
-        cout << linha << endl;
-        H.resize(m+1);
-    }
-    // Inicializa matrix com zeros
-    for (int i = 0; i <= n; i++)
-        cout<<0<<endl;
-    {
-        for (int j = 0; j <= m; j++)
-        {
-            H[i][j].value = 0;
-        }
+    for(int linha = 0; linha < n+1; linha++){
+        H[linha].resize(m+1);
     }
 
     int diagonal, delecao, insercao;
@@ -72,6 +62,7 @@ returnFuction calculateMatrix(int n,int m, string dna1, string dna2)
 
 
     // calcula a matrix
+    //linha = i; coluna = j
     for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= m; j++)
@@ -137,6 +128,8 @@ finalAnswer get_path(returnFuction resp, string dnaA, string dnaB){
     matrixElement nextElement;
     // path.push_back(currentElement);
     //meio confuso sepa ta errado!
+
+
     while(currentElement.value != 0){
 
         int i = currentElement.i;
@@ -145,30 +138,30 @@ finalAnswer get_path(returnFuction resp, string dnaA, string dnaB){
         
             nextElement = resp.matrix[i - 1][j - 1];
             
-            dnaAMatch += dnaA[j];
-            dnaBMatch += dnaB[i];
+            dnaAMatch += dnaA[i-1];
+            dnaBMatch += dnaB[j-1];
 
 
         }else if (currentElement.direction == "delecao"){
             
             nextElement = resp.matrix[i-1][j];
 
-            dnaAMatch += dnaA[j-1];
+            dnaAMatch += dnaA[i-1];
             dnaBMatch += "_";
         
         }else{
             
-            nextElement =nextElement = resp.matrix[i][j-1];;
+            nextElement = resp.matrix[i][j-1];;
             dnaAMatch += "_";
-            dnaBMatch += dnaA[i-1];
+            dnaBMatch += dnaB[j-1];
         }
 
         currentElement = nextElement;
         // path.push_back(currentElement);
     }
 
-    string dnaAreverso (dnaA.rbegin(), dnaA.rend());
-    string dnaBreverso (dnaB.rbegin(), dnaB.rend());
+    string dnaAreverso (dnaAMatch.rbegin(), dnaAMatch.rend());
+    string dnaBreverso (dnaBMatch.rbegin(), dnaBMatch.rend());
 
     finalAnswer resposta;
     resposta.dnaA = dnaAreverso;
@@ -180,16 +173,29 @@ finalAnswer get_path(returnFuction resp, string dnaA, string dnaB){
 
 int main(){
 
-    cout<<"teste";
-    string dnaA = "ATC";
-    string dnaB = "ATC";
-    int n = 3;
-    int m = 3;
+    string dnaA = "AATVGH";
+    string dnaB = "XAATHG";
+    int n = 6;
+    int m = 6;
 
     returnFuction resp = calculateMatrix(n,m,dnaA,dnaB);
-    // finalAnswer final = get_path(resp,dnaA,dnaB);
-    // cout<< final.dnaA << endl;
-    // cout<< final.dnaB << endl;
-    // cout << final.score;
+
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= m; j++)
+        {
+            cout << resp.matrix[i][j].value << " ";
+        }
+            
+        // Newline for new row
+        cout << endl;
+    }
+
+
+
+    finalAnswer final = get_path(resp,dnaA,dnaB);
+    cout<< final.dnaA << endl;
+    cout<< final.dnaB << endl;
+    cout << final.score << endl;
 
 }
