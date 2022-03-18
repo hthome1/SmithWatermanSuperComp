@@ -1,0 +1,195 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <tuple>
+#include <fstream>
+
+using namespace std;
+
+struct matrixElement
+{
+    int value;
+    string direction;
+    int i;
+    int j;
+};
+
+struct returnFuction{
+    vector < vector <matrixElement>> matrix;
+    matrixElement maxGlobal;
+};
+
+struct finalAnswer{
+    string dnaA;
+    string dnaB;
+    int score;
+};
+
+int score(char a, char b)
+{
+    if (a == b)
+    {
+        return 2;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+//Nao sei como dizer que a funcao vai retornar uma matrix de struct e um struct talvez criar uma struct que tem:
+// Matrix de matrixElement  e um matrixElement
+//retorna uma matrix do struct e um elemento isolado da matrix
+
+returnFuction calculateMatrix(int n,int m, string dna1, string dna2)
+{
+
+    //cria a matrix nao sei se eh assim!!!
+    // matrixElement H[n + 1][m + 1];
+
+    vector < vector <matrixElement>> H;
+    H.resize(n+1);
+
+    for(int linha = 0; linha< n+1; linha++){
+        cout << linha << endl;
+        H.resize(m+1);
+    }
+    // Inicializa matrix com zeros
+    for (int i = 0; i <= n; i++)
+        cout<<0<<endl;
+    {
+        for (int j = 0; j <= m; j++)
+        {
+            H[i][j].value = 0;
+        }
+    }
+
+    int diagonal, delecao, insercao;
+    matrixElement globalMax;
+    globalMax.value = 0;
+
+
+
+    // calcula a matrix
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            matrixElement currentElement;
+            currentElement.i = i;
+            currentElement.j = j;
+
+            int w = score(dna1[i - 1], dna2[j - 1]);
+
+            diagonal = H[i - 1][j - 1].value + w;
+            delecao = H[i - 1][j].value - 1;
+            insercao = H[i][j - 1].value - 1;
+
+            // calcula maximo entre os tres
+            int max = std::max({0, diagonal, delecao, insercao});
+            currentElement.value = max;
+
+            
+            
+            // verifica de que direcao o maximo veio
+            if (max == diagonal || max == 0)
+            {
+                currentElement.direction = "diagonal";
+            }
+            else if (max == delecao)
+            {
+                currentElement.direction = "delecao";
+            }
+            else
+            {
+                currentElement.direction = "insercao";
+            }
+
+            // adiciona o elemento na matrix
+            H[i][j] = currentElement;
+
+            if (currentElement.value >= globalMax.value){
+
+                //nao sei se posso fazer isso, talvez, tenha que fazer separado
+                globalMax = currentElement;
+            }
+
+
+        }
+    }
+
+    returnFuction resp;
+
+    resp.matrix = H;
+    resp.maxGlobal = globalMax;
+
+    return resp;
+}
+
+
+finalAnswer get_path(returnFuction resp, string dnaA, string dnaB){
+    string dnaAMatch;
+    string dnaBMatch;
+    vector <matrixElement> path;
+    matrixElement currentElement;
+    currentElement = resp.maxGlobal;
+    matrixElement nextElement;
+    // path.push_back(currentElement);
+    //meio confuso sepa ta errado!
+    while(currentElement.value != 0){
+
+        int i = currentElement.i;
+        int j = currentElement.j;
+        if (currentElement.direction == "diagonal"){
+        
+            nextElement = resp.matrix[i - 1][j - 1];
+            
+            dnaAMatch += dnaA[j];
+            dnaBMatch += dnaB[i];
+
+
+        }else if (currentElement.direction == "delecao"){
+            
+            nextElement = resp.matrix[i-1][j];
+
+            dnaAMatch += dnaA[j-1];
+            dnaBMatch += "_";
+        
+        }else{
+            
+            nextElement =nextElement = resp.matrix[i][j-1];;
+            dnaAMatch += "_";
+            dnaBMatch += dnaA[i-1];
+        }
+
+        currentElement = nextElement;
+        // path.push_back(currentElement);
+    }
+
+    string dnaAreverso (dnaA.rbegin(), dnaA.rend());
+    string dnaBreverso (dnaB.rbegin(), dnaB.rend());
+
+    finalAnswer resposta;
+    resposta.dnaA = dnaAreverso;
+    resposta.dnaB = dnaBreverso;
+    resposta.score = resp.maxGlobal.value;
+
+    return resposta;
+}
+
+int main(){
+
+    cout<<"teste";
+    string dnaA = "ATC";
+    string dnaB = "ATC";
+    int n = 3;
+    int m = 3;
+
+    returnFuction resp = calculateMatrix(n,m,dnaA,dnaB);
+    // finalAnswer final = get_path(resp,dnaA,dnaB);
+    // cout<< final.dnaA << endl;
+    // cout<< final.dnaB << endl;
+    // cout << final.score;
+
+}
