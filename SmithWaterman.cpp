@@ -172,24 +172,30 @@ finalAnswer get_path(returnFuction resp, string dnaA, string dnaB){
 }
 
 int main(){
+    // ifstream myfile;
+    // myfile.open ("dna.seq");
 
-    string dnaA = "AATVGH";
-    string dnaB = "XAATHG";
-    int n = 6;
-    int m = 6;
+    string dnaA,dnaB;
+    int n,m;
 
+    cin >> n;
+    cin >> m;
+    cin >> dnaA;
+    cin >> dnaB;
     returnFuction resp = calculateMatrix(n,m,dnaA,dnaB);
 
-    for (int i = 0; i <= n; i++)
-    {
-        for (int j = 0; j <= m; j++)
-        {
-            cout << resp.matrix[i][j].value << " ";
-        }
+
+    // IMPRIMI A MATRIZ COMPLETA
+    // for (int i = 0; i <= n; i++)
+    // {
+    //     for (int j = 0; j <= m; j++)
+    //     {
+    //         cout << resp.matrix[i][j].value << " ";
+    //     }
             
-        // Newline for new row
-        cout << endl;
-    }
+    //     // Newline for new row
+    //     cout << endl;
+    // }
 
 
 
